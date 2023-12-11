@@ -122,24 +122,8 @@ public class AppPerformee {
                             break;
                         }
                         case 6: {
-                            Integer opcaoDeletar;
-                            do {
-
-                                System.out.println("""
-                                        +-------------------------+
-                                        | Deletar Componente      |
-                                        +-------------------------+
-                                        | 1) CPU                  |
-                                        | 2) RAM                  |
-                                        | 3) Disco                |
-                                        | 4) Rede                 |
-                                        | 5) Voltar               |
-                                        +-------------------------+""");
-                                opcaoDeletar = leitor.nextInt();
-
-                                dao.deletarComponentes(opcaoDeletar);
-                            } while(opcaoDeletar != 5);
-
+                            dao.deletarComponentes();
+                            break;
                         }
                         case 7: {
                             System.out.println("""

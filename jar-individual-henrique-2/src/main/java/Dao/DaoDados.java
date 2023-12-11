@@ -357,7 +357,7 @@ public class DaoDados {
         }
     }
 
-    public void deletarComponentes(Integer opcao) {
+    public void deletarComponentes() {
         Conexao conexao = new Conexao();
         JdbcTemplate con = conexao.getConexaoDoBanco();
         JdbcTemplate conServer = conexao.getConexaoDoBancoServer();
@@ -373,82 +373,12 @@ public class DaoDados {
                     : Usuário do IP %s, hostName: %s. Tentou deletar componentes do servidor de IP: %s, mas não existem componentes cadastrados para deletar!""".formatted(ipUser, hostNameUser, ipServidor);
             setLog(descricao);
         } else {
-            switch (opcao) {
-                case 1: {
-
-                    idComponente = con.queryForObject("SELECT idComponente FROM Componente where tipo = 'CPU' and fkServidor = ?", Integer.class, ipServidor);
-                    idComponenteServer = conServer.queryForObject("SELECT idComponente FROM Componente where tipo = 'CPU' and fkServidor = ?", Integer.class, ipServidor);
-
-                    System.out.println("Deletando dados da CPU....");
-                    con.update("delete from Componente where idComponente = ?", idComponente);
-
-                    conServer.update("delete from Componente where idComponente = ?", idComponente);
-
-                    String descricao = """
-                            : Usuário do IP %s, hostName: %s. Deletou a CPU do servidor de IP: %s com sucesso!""".formatted(ipUser, hostNameUser, ipServidor);
-                    setLog(descricao);
-                    break;
-                }
-                case 2: {
-
-                    idComponente = con.queryForObject("SELECT idComponente FROM Componente where tipo = 'RAM' and fkServidor = ?", Integer.class, ipServidor);
-                    idComponenteServer = conServer.queryForObject("SELECT idComponente FROM Componente where tipo = 'RAM' and fkServidor = ?", Integer.class, ipServidor);
-
-                    System.out.println("Deletando dados da RAM....");
-                    con.update("delete from Componente where idComponente = ?", idComponente);
-                    conServer.update("delete from Componente where idComponente = ?", idComponente);
-
-                    String descricao = """
-                            : Usuário do IP %s, hostName: %s. Deletou a RAM do servidor de IP: %s com sucesso!""".formatted(ipUser, hostNameUser, ipServidor);
-                    setLog(descricao);
-                    break;
-                }
-                case 3: {
-
-                    idComponente = con.queryForObject("SELECT idComponente FROM Componente where tipo = 'Disco' and fkServidor = ?", Integer.class, ipServidor);
-                    idComponenteServer = conServer.queryForObject("SELECT idComponente FROM Componente where tipo = 'Disco' and fkServidor = ?", Integer.class, ipServidor);
-
-                    DiscoGrupo grupoDeDiscos = looca.getGrupoDeDiscos();
-
-                    System.out.println("Deletando dados do Disco....");
-                    List<Disco> discos = grupoDeDiscos.getDiscos();
-                    for (Disco disco : discos) {
-                        con.update("delete from Componente where idComponente = ?", idComponente);
-                        conServer.update("delete from Componente where idComponente = ?", idComponente);
-                        break;
-                    }
-                    String descricao = """
-                            : Usuário do IP %s, hostName: %s. Deletou o Disco do servidor de IP: %s com sucesso!""".formatted(ipUser, hostNameUser, ipServidor);
-                    setLog(descricao);
-                    break;
-                }
-                case 4: {
-
-                    idComponente = con.queryForObject("SELECT idComponente FROM Componente where tipo = 'Rede' and fkServidor = ?", Integer.class, ipServidor);
-                    idComponenteServer = conServer.queryForObject("SELECT idComponente FROM Componente where tipo = 'Rede' and fkServidor = ?", Integer.class, ipServidor);
-
-                    RedeInterfaceGroup grupoDeRedes = looca.getRede().getGrupoDeInterfaces();
-
-                    List<RedeInterface> redes = grupoDeRedes.getInterfaces();
-                    System.out.println("Deletando dados da Rede....");
-                    for (RedeInterface rede : redes) {
-                        con.update("delete from Componente where idComponente = ?", idComponente);
-                        conServer.update("delete from Componente where idComponente = ?", idComponente);
-                        break;
-                    }
-                    String descricao = """
-                            : Usuário do IP %s, hostName: %s. Deletou a Rede do servidor de IP: %s com sucesso!""".formatted(ipUser, hostNameUser, ipServidor);
-                    setLog(descricao);
-                    break;
-                }
-                case 5: {
-                    System.out.println("Voltando para o inicio...");
-                    break;
-                }
-                default: {
-                    System.out.println("Opção inválida! digite novamente");
-                }
-            }
+            con.update("delete from Alerta where fkServidor = ?", ipServidor);
+            con.update("delete from Leitura where fkServidor = ?", ipServidor);
+            con.update("delete from Componente where fkServidor = ?", ipServidor);
+            conServer.update("delete from Alerta where fkServidor = ?", ipServidor);
+            conServer.update("delete from Leitura where fkServidor = ?", ipServidor);
+            conServer.update("delete from Componente where fkServidor = ?", ipServidor);
         }
     }
 
